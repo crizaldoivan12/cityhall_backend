@@ -24,13 +24,14 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
 
+# Fix permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chmod -R 775 storage bootstrap/cache
 
-RUN php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan config:cache
-
 EXPOSE 80
 
-CMD php artisan migrate --force && apache2-foreground
+CMD php artisan config:clear && \
+    php artisan cache:clear && \
+    php artisan config:cache && \
+    php artisan migrate --force && \
+    apache2-foreground
