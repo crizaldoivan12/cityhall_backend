@@ -22,6 +22,10 @@ use App\Http\Controllers\PasswordResetRequestController;
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/password-reset-requests', [PasswordResetRequestController::class, 'store']);
+// Explicit preflight fallback for browsers making CORS OPTIONS requests.
+Route::options('/{any}', function () {
+    return response()->noContent();
+})->where('any', '.*');
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authenticated user info & logout
