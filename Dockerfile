@@ -2,7 +2,7 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# Install system dependencies + zip support
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     unzip \
@@ -10,19 +10,23 @@ RUN apt-get update && apt-get install -y \
     curl \
     && docker-php-ext-install pdo pdo_mysql zip
 
-# Copy project files
+# Enable Apache rewrite
+RUN a2enmod rewrite
+
+# Allow .htaccess
+RUN echo '<Directory /var/www/html/public>\n\
+    AllowOverride All\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
+# Copy files
 COPY . .
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies
 RUN composer install
 
-# Set Apache to Laravel public folder
+# Point Apache to public
 RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf
-
-# Enable rewrite
-RUN a2enmod rewrite
 
 EXPOSE 80
