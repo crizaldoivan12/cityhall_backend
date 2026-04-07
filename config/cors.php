@@ -1,5 +1,22 @@
 <?php
 
+$frontendUrls = array_values(array_filter(array_map(
+    'trim',
+    explode(',', (string) env('FRONTEND_URLS', ''))
+)));
+
+$allowedOrigins = array_values(array_unique(array_filter([
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    env('FRONTEND_URL', 'http://localhost:3000'),
+    ...$frontendUrls,
+])));
+
+$allowedOriginPatterns = array_values(array_filter(array_map(
+    'trim',
+    explode(',', (string) env('FRONTEND_ORIGIN_PATTERNS', ''))
+)));
+
 return [
 
     /*
@@ -19,13 +36,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [
-        'http://localhost:3000',
-        'http://127.0.0.1:3000',
-        env('FRONTEND_URL', 'http://localhost:3000'),
-    ],
+    'allowed_origins' => $allowedOrigins,
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => $allowedOriginPatterns,
 
     'allowed_headers' => ['*'],
 
