@@ -8,6 +8,8 @@ $frontendUrls = array_values(array_filter(array_map(
 $allowedOrigins = array_values(array_unique(array_filter([
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'https://cityhall-frontend-eixwrt04m-dummy12s-projects.vercel.app/login',
+    'https://cityhall-backend-s1fg.onrender.com/api',
     env('FRONTEND_URL', 'http://localhost:3000'),
     ...$frontendUrls,
 ])));
