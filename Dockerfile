@@ -17,6 +17,7 @@ RUN echo '<Directory /var/www/html/public>\n\
 </Directory>' >> /etc/apache2/apache2.conf
 
 COPY . .
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -27,11 +28,8 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
 # Fix permissions
 RUN chown -R www-data:www-data storage bootstrap/cache
 RUN chmod -R 775 storage bootstrap/cache
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 80
 
-CMD php artisan migrate --force && \
-    php artisan config:clear && \
-    php artisan cache:clear && \
-    php artisan config:cache && \
-    apache2-foreground
+CMD ["/usr/local/bin/entrypoint.sh"]
