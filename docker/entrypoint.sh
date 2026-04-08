@@ -3,6 +3,15 @@ set -e
 
 cd /var/www/html
 
+echo "Configuring Apache for Render..."
+
+# 🔥 IMPORTANT: Make Apache use Render's PORT
+sed -i "s/80/${PORT}/g" /etc/apache2/ports.conf
+sed -i "s/80/${PORT}/g" /etc/apache2/sites-available/000-default.conf
+
+# Optional (removes warning)
+echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
 echo "Starting Laravel container..."
 
 # Clear config ONLY (safe before DB)
