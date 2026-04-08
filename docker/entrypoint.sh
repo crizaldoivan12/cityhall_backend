@@ -7,7 +7,9 @@ echo "Starting Laravel container..."
 
 # Wait for database to be ready
 echo "Waiting for database connection..."
-until php artisan migrate:status > /dev/null 2>&1
+echo "Testing DB connection..."
+php artisan migrate:status
+exit 1
 do
   echo "Database not ready... retrying in 2 seconds"
   sleep 2
