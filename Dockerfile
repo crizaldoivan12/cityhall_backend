@@ -46,3 +46,4 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Start using entrypoint
 CMD ["/usr/local/bin/entrypoint.sh"]
+ENV PORT=10000

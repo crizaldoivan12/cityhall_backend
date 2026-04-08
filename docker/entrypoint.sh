@@ -5,11 +5,12 @@ cd /var/www/html
 
 echo "Configuring Apache for Render..."
 
-# Force Apache to listen on all interfaces
-echo "Listen ${PORT}" > /etc/apache2/ports.conf
+# Force Apache to listen on all interfaces and correct port
+echo "Listen 0.0.0.0:${PORT}" > /etc/apache2/ports.conf
 
 cat <<EOF > /etc/apache2/sites-available/000-default.conf
 <VirtualHost *:${PORT}>
+    ServerName localhost
     DocumentRoot /var/www/html/public
 
     <Directory /var/www/html/public>
@@ -18,8 +19,6 @@ cat <<EOF > /etc/apache2/sites-available/000-default.conf
     </Directory>
 </VirtualHost>
 EOF
-
-echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 echo "Starting Laravel container..."
 
