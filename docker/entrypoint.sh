@@ -5,16 +5,16 @@ cd /var/www/html
 
 echo "Starting Laravel container..."
 
-# Clear cached config (important for env vars)
+# Clear config ONLY (safe before DB)
 php artisan config:clear
-php artisan cache:clear
 
-# Run migrations and seeders
+# Run migrations first (creates tables)
 echo "Running migrations and seeders..."
 php artisan migrate --seed --force --no-interaction
 
-# Optimize Laravel
+# NOW it's safe to touch cache
 echo "Optimizing Laravel..."
+php artisan cache:clear
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
