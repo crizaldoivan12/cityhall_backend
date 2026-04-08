@@ -30,17 +30,18 @@ a2ensite app.conf
 
 echo "Starting Laravel container..."
 
-if [ ! -f .env ] && [ -f .env.example ]; then
-    echo "No .env found. Copying from .env.example..."
-    cp .env.example .env
+if [ ! -f .env ]; then
+    echo "No .env file found. Using platform environment variables."
 fi
 
-if [ -z "${APP_KEY}" ] && ! grep -q '^APP_KEY=' .env 2>/dev/null; then
+if [ -z "${APP_KEY}" ] && ! grep -Eq '^APP_KEY=.+$' .env 2>/dev/null; then
     echo "APP_KEY is missing. Generating one..."
     php artisan key:generate --force --no-interaction
 fi
 
-php artisan optimize:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
 echo "Running migrations..."
 php artisan migrate --force --no-interaction
