@@ -5,29 +5,16 @@ cd /var/www/html
 
 echo "Starting Laravel container..."
 
-# Wait for database to be ready
-echo "Waiting for database connection..."
-echo "Testing DB connection..."
-php artisan migrate:status
-exit 1
-do
-  echo "Database not ready... retrying in 2 seconds"
-  sleep 2
-done
-
-echo "Database is ready!"
-
-# Run migrations and seeders safely
-echo "Running migrations and seeders..."
-php artisan migrate --seed --force --no-interaction || {
-  echo "Migration or seeding failed!"
-  exit 1
-}
-
-# Optimize Laravel (clear caches properly)
-echo "Optimizing Laravel..."
+# Clear cached config (important for env vars)
 php artisan config:clear
 php artisan cache:clear
+
+# Run migrations and seeders
+echo "Running migrations and seeders..."
+php artisan migrate --seed --force --no-interaction
+
+# Optimize Laravel
+echo "Optimizing Laravel..."
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
