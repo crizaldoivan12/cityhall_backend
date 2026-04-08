@@ -5,10 +5,15 @@ cd /var/www/html
 
 echo "Configuring Apache for Render..."
 
-# Force Apache to listen on all interfaces and correct port
-echo "Listen 0.0.0.0:${PORT}" > /etc/apache2/ports.conf
+# Remove default configs completely
+rm -f /etc/apache2/sites-enabled/000-default.conf
+rm -f /etc/apache2/sites-available/000-default.conf
 
-cat <<EOF > /etc/apache2/sites-available/000-default.conf
+# Force correct port binding
+echo "Listen ${PORT}" > /etc/apache2/ports.conf
+
+# Create fresh virtual host
+cat <<EOF > /etc/apache2/sites-available/app.conf
 <VirtualHost *:${PORT}>
     ServerName localhost
     DocumentRoot /var/www/html/public
@@ -19,6 +24,9 @@ cat <<EOF > /etc/apache2/sites-available/000-default.conf
     </Directory>
 </VirtualHost>
 EOF
+
+# Enable new config
+a2ensite app.conf
 
 echo "Starting Laravel container..."
 
@@ -33,5 +41,5 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 
-echo "Starting Apache..."
-exec apache2-foreground
+echo "Starting Apache on port ${PORT}..."
+exec apache2ctl -D FOREGROUND
