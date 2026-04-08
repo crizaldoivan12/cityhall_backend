@@ -30,15 +30,28 @@ a2ensite app.conf
 
 echo "Starting Laravel container..."
 
-php artisan config:clear
+if [ ! -f .env ] && [ -f .env.example ]; then
+    echo "No .env found. Copying from .env.example..."
+    cp .env.example .env
+fi
 
-echo "Running migrations and seeders..."
-php artisan migrate --seed --force --no-interaction
+if [ -z "${APP_KEY}" ] && ! grep -q '^APP_KEY=' .env 2>/dev/null; then
+    echo "APP_KEY is missing. Generating one..."
+    php artisan key:generate --force --no-interaction
+fi
+
+php artisan optimize:clear
+
+echo "Running migrations..."
+php artisan migrate --force --no-interaction
+
+if [ "${RUN_SEEDERS:-false}" = "true" ]; then
+    echo "RUN_SEEDERS=true detected. Running seeders..."
+    php artisan db:seed --force --no-interaction
+fi
 
 echo "Optimizing Laravel..."
-php artisan cache:clear
 php artisan config:cache
-php artisan route:cache
 php artisan view:cache
 
 echo "Starting Apache on port ${PORT}..."
