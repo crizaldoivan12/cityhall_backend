@@ -22,6 +22,14 @@ if (!in_array('^https:\/\/.*\.vercel\.app$', $allowedOriginPatterns, true)) {
     $allowedOriginPatterns[] = '^https:\/\/.*\.vercel\.app$';
 }
 
+if (!in_array('^http:\/\/localhost(:\d+)?$', $allowedOriginPatterns, true)) {
+    $allowedOriginPatterns[] = '^http:\/\/localhost(:\d+)?$';
+}
+
+if (!in_array('^http:\/\/127\.0\.0\.1(:\d+)?$', $allowedOriginPatterns, true)) {
+    $allowedOriginPatterns[] = '^http:\/\/127\.0\.0\.1(:\d+)?$';
+}
+
 return [
 
     /*
