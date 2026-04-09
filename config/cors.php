@@ -5,10 +5,13 @@ $frontendUrls = array_values(array_filter(array_map(
     explode(',', (string) env('FRONTEND_URLS', ''))
 )));
 
-'allowed_origins' => [
+$allowedOrigins = array_values(array_unique(array_filter([
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    env('FRONTEND_URL', 'http://localhost:3000'),
+    ...$frontendUrls,
     'https://cityhall-phi.vercel.app',
-],
-
+])));
 
 $allowedOriginPatterns = array_values(array_filter(array_map(
     'trim',
@@ -49,9 +52,6 @@ return [
 
     'max_age' => 0,
 
-    'allowed_origins' => [
-    'https://cityhall-phi.vercel.app',
-],
-'supports_credentials' => true,
+    'supports_credentials' => true,
 
 ];
